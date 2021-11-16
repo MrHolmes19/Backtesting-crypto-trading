@@ -1,0 +1,11 @@
+
+# Ignorados
+
+historial
+indicadores
+historial.csv
+indicadores
+historial-BTC.csv
+indicadores - original.csv
+
+*.csv
