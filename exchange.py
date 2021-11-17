@@ -5,7 +5,7 @@ from datetime import datetime
 from pprint import pprint
 import pandas as pd
 
-class Billetera():
+class Exchange():
     def __init__(self, nombre = "billetera", cripto = "BTC"):
         '''
         Recibe el nombre que tendrá el archivo .csv y define su ruta
@@ -19,7 +19,7 @@ class Billetera():
     def __str__(self):
         return f'Billetera de criptomonedas, iniciada con {self.cripto}'
 
-    def crear(self):
+    def crearBilletera(self):
         '''
         Primer método que se ejecuta. Crea el archivo CSV y el encabezado.
         Si el archivo ya está creado, devuelve un comentario 
@@ -90,13 +90,12 @@ class Billetera():
         tenencia = self.fondos()
         return tenencia[f'Tenencia en {cripto}']
 
-    def ingresar(self, cripto, monto):
+    def ingresar(self, cripto, monto, fecha):
         '''
         Recibe un tipo de criptomoneda y el monto ingresado a la billetera
         Suma esta moneda al total de la billetera
         '''
         cripto = cripto.upper()
-        fecha = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         tenencia = self.fondos()
 
         if self.estaVacia() == True: # Creo primer registro  
@@ -136,7 +135,8 @@ class Billetera():
         '''
         pass
 
-    def registrar(self, cripto, monto, precio):
+    
+    def registrar(self, cripto, monto_cripto, monto_usdt, fecha):
         '''
         Recibe una transacción y registra los cambios en la billetera.
         Si el monto es positivo se toma como compra, si es negativo se toma como venta.
@@ -147,45 +147,44 @@ class Billetera():
 
         # Obtengo ultimo registro
         tenencia = self.fondos()
+
         # Convierto a float los valores para poder sumarlos
         tenencia_cripto = float((tenencia[f'Tenencia en {cripto}']))
         tenencia_usdt = float(tenencia[f'Tenencia en USDT'])
-        tenencia_cripto += monto
-        tenencia_usdt -= monto*precio
+        tenencia_cripto += monto_cripto
+        tenencia_usdt -= monto_usdt
+        
 
         # Creo nuevo tenencia, actualizado
         tenencia[f'Tenencia en {cripto}'] = tenencia_cripto
         tenencia[f'Tenencia en USDT'] = round(tenencia_usdt,2)
-        tenencia[f'Ultima modificacion'] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        tenencia[f'Ultima modificacion'] = fecha
         registro = list(tenencia.values())
+        
         # Agrego registro al archivo
         with open(self.nombre, "a", newline="") as billetera: # "a" para que agrege fila nueva, newline="" para que no cree un salto de linea
             writer = csv.writer(billetera)
-            writer.writerow(registro)
+            writer.writerow(registro)    
     
-    def comprar(self, cripto, monto, precio, orden="Compra"):
+    def comprar(self, cripto, monto_usdt, precio, fecha):
         '''
-        Recibe una cripto, el monto y el precio de compra y lo registra en el csv de transacciones.
-        El monto siempre es en 'USDT', el precio es cuantos USDT vale la cripto. (Esto cambiaría al trabajar con pares)
+        Recibe una cripto, el monto a desembolsar y el precio de compra y lo registra en el csv de transacciones.
         '''
         # Validaciones
         if self.estaVacia() == True:
             return print("Primero es necesario ingresar dinero a tu billetera")
 
-        precio = float(precio)
-        fee = 0.001 # Comisión del exchange, en este caso Binance
-        monto_usdt = monto * precio * (1+fee)
-        monto_usdt = round(monto_usdt, 7) 
-
         if self.tenencia("USDT") < monto_usdt:
-            return print("No hay fondos suficientes para hacer esta compra")
+            return print("No hay fondos suficientes para hacer esta compra")              
 
         # Armo el registro
-        fecha = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         cripto = cripto.upper()
-        monto = round(float(monto), 7)
-
-        registro = [fecha, orden, monto, precio, monto_usdt]
+        monto_usdt = round(float(monto_usdt), 7)
+        precio = float(precio)
+        fee = 0.001 # Comisión del exchange, en este caso Binance
+        monto_cripto = monto_usdt / precio * (1-fee)
+        monto_cripto = round(monto_cripto, 7) 
+        registro = [fecha, "Compra", monto_cripto, precio, monto_usdt]
 
         # Agrego registro al archivo
         with open(f'Transacciones-{self.cripto}.csv', "a", newline="") as transacciones: # "a" para que agrege fila nueva, newline="" para que no cree un salto de linea
@@ -193,22 +192,43 @@ class Billetera():
             writer.writerow(registro)
         
         # Actualizo billetera
-        self.registrar(cripto, monto, precio)
+        self.registrar(cripto, monto_cripto, monto_usdt, fecha)
 
-        if orden == "Compra":
-            return print("¡Compra realizada exitosamente!")
+        return print("¡Compra realizada exitosamente!")
 
-    def vender(self, cripto, monto, precio):
+    def vender(self, cripto, monto_cripto, precio, fecha):
         '''
-        Recibe una cripto, el monto y el precio de venta. Registra la transacción y actualiza la billetera.
+        Recibe una cripto, el monto de la misma a vender y el precio de venta y lo registra en el csv de transacciones.
         '''
-        if self.tenencia(cripto) < monto:
-            #return print("Error, no podes vender mas de lo que tenes")
-            self.comprar(cripto, self.tenencia(cripto), precio, "Vender")
-            return print("¡Venta realizada exitosamente!")
-        else:
-            self.comprar(cripto, monto, precio, "Venta")
-            return print("¡Venta realizada exitosamente!")
+        cripto = cripto.upper()
+        # Validaciones
+        if self.estaVacia() == True:
+            return print("Primero es necesario ingresar dinero a tu billetera")
+
+        if self.tenencia(cripto) == 0:
+            return print("No hay fondos suficientes para hacer esta compra")              
+        elif self.tenencia(cripto) < monto_cripto:
+            monto_cripto = self.tenencia(cripto) 
+        
+        # Armo el registro
+        monto_cripto = round(float(monto_cripto), 7)
+        precio = float(precio)
+        fee = 0.001 # Comisión del exchange, en este caso Binance
+        monto_usdt = monto_cripto * precio * (1-fee)
+        monto_usdt = round(monto_usdt, 7) 
+        
+        registro = [fecha, "Venta", monto_cripto, precio, monto_usdt]
+        print(registro)
+        # Agrego registro al archivo
+        with open(f'Transacciones-{self.cripto}.csv', "a", newline="") as transacciones: # "a" para que agrege fila nueva, newline="" para que no cree un salto de linea
+            writer = csv.writer(transacciones)
+            writer.writerow(registro)
+        
+        # Actualizo billetera
+        self.registrar(cripto, -monto_cripto, -monto_usdt, fecha)
+
+        return print("Venta realizada exitosamente!")
+
     
     def tenenciaMaximaEn(self, cripto, fecha = False):
         '''
@@ -255,43 +275,44 @@ class Billetera():
         '''
         return self.mayorCompra(cripto,"Venta")
     
+    
 # ----------- PRUEBAS -------------
 
 '''
-# Billetera
+## Billetera
 
-billetera = Billetera("billetera", "BTC")
+ex = Exchange("billetera", "BTC")
 
-print(billetera)
+print(ex)
 
-billetera.crear()
-print("Fondos al momento cero: ", billetera.fondos())
+ex.crearBilletera()
+print("Fondos al momento cero: ", ex.fondos())
 
-billetera.ingresar("USDT", 250)
-billetera.ingresar("BTC", 0.0005)
-print("Fondos luego de ingresos: ", billetera.fondos())
+ex.ingresar("USDT", 250)
+ex.ingresar("BTC", 0.0005)
+print("Fondos luego de ingresos: ", ex.fondos())
 
-billetera.retirar("USDT", 50)
-print("Fondos luego de retiro: ", billetera.fondos())
+ex.retirar("USDT", 50)
+print("Fondos luego de retiro: ", ex.fondos())
 
-print("Tenencia en Bitcoin: ", billetera.tenencia("BTC"))
+print("Tenencia en Bitcoin: ", ex.tenencia("BTC"))
 
-# Transacciones
+## Transacciones
 
-billetera.comprar("BTC",0.00025, 61521.37)
-print("Fondos luego de comprar: ", billetera.fondos())
+ex.comprar("BTC",0.00025, 61521.37)
+print("Fondos luego de comprar: ", ex.fondos())
 
-billetera.vender("BTC",0.00004, 68821.12)
-print("Fondos luego de vender: ", billetera.fondos())
+ex.vender("BTC",0.00004, 68821.12)
+print("Fondos luego de vender: ", ex.fondos())
 
-billetera.comprar("BTC",0.00015, 63521.77)
-billetera.vender("BTC",0.00020, 79821.12)
-billetera.comprar("BTC",0.00035, 55521.34)
-billetera.vender("BTC",0.00030, 69821.18)
+ex.comprar("BTC",0.00015, 63521.77)
+ex.vender("BTC",0.00020, 79821.12)
+ex.comprar("BTC",0.00035, 55521.34)
+ex.vender("BTC",0.00030, 69821.18)
 
-print(billetera.tenenciaMaximaEn("BTC", fecha = True))
-print(billetera.tenenciaMaximaEn("BTC"))
+print(ex.tenenciaMaximaEn("BTC", fecha = True))
+print(ex.tenenciaMaximaEn("BTC"))
 
-print(billetera.mayorCompra("BTC"))
-print(billetera.mayorVenta("USDT"))
+print(ex.mayorCompra("BTC"))
+print(ex.mayorVenta("USDT"))
 '''
