@@ -94,9 +94,9 @@ def generadorIterador():
 
 # TEST
 
-iterrow()
+#iterrow()
 itertuples()
 nparrays()
 dict()
 arraysList()
-generadorIterador()  
+#generadorIterador()  

@@ -218,7 +218,7 @@ class Exchange():
         monto_usdt = round(monto_usdt, 7) 
         
         registro = [fecha, "Venta", monto_cripto, precio, monto_usdt]
-        print(registro)
+        
         # Agrego registro al archivo
         with open(f'Transacciones-{self.cripto}.csv', "a", newline="") as transacciones: # "a" para que agrege fila nueva, newline="" para que no cree un salto de linea
             writer = csv.writer(transacciones)
@@ -278,41 +278,42 @@ class Exchange():
     
 # ----------- PRUEBAS -------------
 
-'''
-## Billetera
+if __name__=="__main__":
+    '''
+    ## Billetera
 
-ex = Exchange("billetera", "BTC")
+    ex = Exchange("billetera", "BTC")
 
-print(ex)
+    print(ex)
 
-ex.crearBilletera()
-print("Fondos al momento cero: ", ex.fondos())
+    ex.crearBilletera()
+    print("Fondos al momento cero: ", ex.fondos())
 
-ex.ingresar("USDT", 250)
-ex.ingresar("BTC", 0.0005)
-print("Fondos luego de ingresos: ", ex.fondos())
+    ex.ingresar("USDT", 250, "01/01/2021 00:00)
+    ex.ingresar("BTC", 0.0005, "01/01/2021 00:00)
+    print("Fondos luego de ingresos: ", ex.fondos())
 
-ex.retirar("USDT", 50)
-print("Fondos luego de retiro: ", ex.fondos())
+    ex.retirar("USDT", 50)
+    print("Fondos luego de retiro: ", ex.fondos())
 
-print("Tenencia en Bitcoin: ", ex.tenencia("BTC"))
+    print("Tenencia en Bitcoin: ", ex.tenencia("BTC"))
 
-## Transacciones
+    ## Transacciones (Corregir metodos)
 
-ex.comprar("BTC",0.00025, 61521.37)
-print("Fondos luego de comprar: ", ex.fondos())
+    ex.comprar("BTC",0.00025, 61521.37)
+    print("Fondos luego de comprar: ", ex.fondos())
 
-ex.vender("BTC",0.00004, 68821.12)
-print("Fondos luego de vender: ", ex.fondos())
+    ex.vender("BTC",0.00004, 68821.12)
+    print("Fondos luego de vender: ", ex.fondos())
 
-ex.comprar("BTC",0.00015, 63521.77)
-ex.vender("BTC",0.00020, 79821.12)
-ex.comprar("BTC",0.00035, 55521.34)
-ex.vender("BTC",0.00030, 69821.18)
+    ex.comprar("BTC",0.00015, 63521.77)
+    ex.vender("BTC",0.00020, 79821.12)
+    ex.comprar("BTC",0.00035, 55521.34)
+    ex.vender("BTC",0.00030, 69821.18)
 
-print(ex.tenenciaMaximaEn("BTC", fecha = True))
-print(ex.tenenciaMaximaEn("BTC"))
+    print(ex.tenenciaMaximaEn("BTC", fecha = True))
+    print(ex.tenenciaMaximaEn("BTC"))
 
-print(ex.mayorCompra("BTC"))
-print(ex.mayorVenta("USDT"))
-'''
+    print(ex.mayorCompra("BTC"))
+    print(ex.mayorVenta("USDT"))
+    '''

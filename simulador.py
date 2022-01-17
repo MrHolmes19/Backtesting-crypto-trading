@@ -18,9 +18,9 @@ bots = settings.bots
 inicio = settings.fecha_inicio
 metodo = settings.metodo
 desplazamiento = settings.desplazamiento
+monto_inicial = settings.inversion_inicial
 
-
-def simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, *bots):
+def simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, *bots, monto_inicial):
     '''
     Recibe parametros de simulacion definidos en setting.py
     Genera escenarios de simulación y corre los ejecutores en cada uno
@@ -66,9 +66,9 @@ def simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, *bots):
         lista_iterable.append(iterable)
 
     ## Ejecucion de las simulaciones
-    for i in lista_iterable:
+    for iterable in lista_iterable:
         for bot in bots:
-            ejecutor.ejecutar(iterable, bot, cripto)
+            ejecutor.ejecutar(iterable, bot, cripto, monto_inicial)
             #print(f'----- Ejecutor en escenario {escenarios_df.index(i)} con bot: ', {j} -----')
             
     return print("Simulacion finalizada exitosamente =)")
@@ -78,7 +78,7 @@ def simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, *bots):
 
 start = timer() 
 
-simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, *bots)
+simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, *bots, monto_inicial)
 
 stop = timer()
 time = stop-start

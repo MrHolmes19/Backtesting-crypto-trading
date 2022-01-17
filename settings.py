@@ -36,3 +36,6 @@ bots = [
     "bot4",
     "bot5",
 ]
+
+## 8) Dinero inicial que se carga a la billetera
+inversion_inicial = 1000
