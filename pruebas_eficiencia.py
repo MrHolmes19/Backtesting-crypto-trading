@@ -4,14 +4,16 @@ import random
 from pprint import pprint
 from timeit import default_timer as timer
 from itertools import tee
+import os
 
-df = pd.read_csv("C:/Users/SUSTENTATOR SA/Desktop/Documentos/Programacion/Curso Python UNSAM/Proyecto final - Bot trading/Repo Github/TradeingBot/historial-BTC.csv")
+fuente = f'{os.path.dirname(os.path.realpath(__file__))}\historial-BTC.csv'
+df = pd.read_csv(fuente)
 #df = df.loc[1:10080] # Una semana
 #df = df.loc[1:43200] # Un mes
 #df = df.loc[1:525960] # Un año            
 df = df['date'].to_frame() # 2 años y quitando el resto de las columnas
 
-# METODOS DE RECORRIDO
+# ------------------------------------ METODOS DE RECORRIDO -----------------------------------
 
 def iterrow():
     start = timer()
@@ -92,11 +94,58 @@ def generadorIterador():
     time = stop-start
     print("Tiempo estimado recorriendo in iterador generador: ", time)
 
-# TEST
+def dataframeIndex():
+    df = pd.read_csv(fuente)
+    df['date'] = pd.to_datetime(df.date)    
+    df = df.set_index('date')
+    start = timer()
+    
+    df_index = df.index
+    for i in df_index:
+        # print(i)
+        a = 2 + 2
+        
+    stop = timer()
+    time = stop-start
+    print("Tiempo estimado recorriendo indices de un DF: ", time)
+    
+# TEST DE VELOCIDAD PARA CICLAR FECHAS
 
+'''
 #iterrow()
 itertuples()
 nparrays()
 dict()
 arraysList()
+dataframeIndex()
 #generadorIterador()  
+'''
+
+# ------------------------------------ METODOS DE CONVERSION FECHAS -----------------------------------
+
+df = pd.read_csv(fuente)
+'''
+start = timer() 
+df['date'] = pd.to_datetime(df['date'])
+stop = timer()
+time = stop-start
+print("Tiempo invertido en pasar todo a Datetime: ", time)
+'''
+
+'''
+start = timer() 
+df['date'] = pd.to_datetime(df['date'], format='%d/%m/%Y %H:%M')
+stop = timer()
+time = stop-start
+print("Tiempo invertido en pasar todo a Datetime CON formato: ", time)
+'''
+
+start = timer() 
+dates = pd.date_range(pd.Timestamp.min, pd.Timestamp.max)
+date_mappings = pd.Series(dates, index=dates.strftime('%d/%m/%Y %H:%M'), name='date')
+#date_mappings = pd.to_datetime(df.set_index('date', drop=True).date.drop_duplicates(), format='%d/%m/%Y %H:%M')
+df = df.join(date_mappings, on='date', lsuffix='_str')
+stop = timer()
+time = stop-start
+print("Tiempo invertido en pasar todo a Datetime CON hack: ", time)
+print(df)

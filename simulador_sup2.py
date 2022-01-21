@@ -4,14 +4,14 @@ import comparador
 import os
 import numpy as np
 import pandas as pd
-from random import randrange
+import random
 from pprint import pprint
 from itertools import tee
-from datetime import datetime, timedelta
+from datetime import datetime
 from timeit import default_timer as timer
 import shutil
 
-## Importo variables preseteadas
+# Importo variables preseteadas
 
 BBDD = settings.BBDD
 cripto = settings.cripto
@@ -23,94 +23,89 @@ metodo = settings.metodo
 desplazamiento = settings.desplazamiento
 bots = settings.bots
 monto_inicial = settings.inversion_inicial
-freq = settings.frequencia
 frac = settings.fraccion
-notif = settings.notificaciones
+freq = settings.frequencia
 
-def simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, monto_inicial, freq, notif, *bots):
+
+def simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, monto_inicial, freq, *bots):
     '''
     Recibe parametros de simulacion definidos en setting.py
     Genera escenarios de simulación y corre los ejecutores en cada uno
     Devuelve resultados en respectivos CSV
     '''
     
-    ## 1) Creo un dataframe del archivo fuente y lo acondiciono
+    ## 1) Creo un dataframe del archivo fuente, y filtro por los campos de interes
     
     print("Importando base de datos...")
     
     df_base = pd.read_csv(fuente)
-    
-    # filtro por los campos de interes
+
     try:
         cols = ['date', 'open', 'high', 'low', 'close',f"Volume {cripto}","Volume USDT","tradecount"]
         df = df_base[cols]
     except:
         return print("|---- Simulación abortada --> La base de datos ingerida no posee los campos necesarios")
     
-    # Convierto columna de fecha a formato fecha
-    try:    
-        df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d %H:%M:%S')
-    except:
-        return print("|---- Simulación abortada --> El formato de fecha del Dataset es distinto al que se espera: 'Y-M-D H:M:S'")
-    
-    # Lo doy vuelta
-    df = df.loc[::-1].reset_index(drop=True)
-    
-    ## 2) Acoto el df al intervalo de interés para la creación de escenarios 
-    #     (Mayor eficiencia y evito errores de indexación)
+    df = df.loc[::-1].reset_index(drop=True) # Lo doy vuelta
 
-    if metodo == "desplazamiento":
-        dias_limite = dt + desplazamiento * n
-    elif metodo == "cascada":
-        dias_limite = dt * n
-    elif metodo == "spot":
-        dias_limite = dt
+    ## 2) Acoto el df segun método de simulación y frecuencia para evitar errores de indexación
+    sub_df = df.copy()
+    
+    if freq == "m":
+        multiplicador = 24 * 60
+    elif freq == "h":
+        multiplicador = 60
+    elif freq == "d":
+        multiplicador = 1
     else:
-        print(f"|---- Simulacion abortada --> Falta definir método de estudio de escenarios")
+        return print("|---- Simulación abortada --> Definí frecuencia de velas")    
     
-    primera_fecha = df["date"].iloc[1]
-    ultima_fecha = df["date"].iloc[-1]
-    fecha_inicio_max = ultima_fecha - timedelta(days=dias_limite)
-
-    if inicio and metodo !="spot":
-        inicio = datetime.strptime(inicio, "%d/%m/%Y %H:%M:%S")
-        if inicio > fecha_inicio_max:
-            print(f"Simulacion abortada --> Para el escenario elegido, la fecha maxima de inicio es:{fecha_inicio_max}. Modifique la fecha")
+    if metodo == "cascada":
+        registros = n * dt * multiplicador
+    elif metodo == "desplazamiento":
+        registros = n * desplazamiento + multiplicador
     else:
-        inicio = primera_fecha
-
-    fin = inicio + timedelta(days=dias_limite)        
+        registros = dt * multiplicador 
     
-    df = df.set_index('date') # Fechas como indice
-    df = df[inicio : fin]    
-            
+    if registros > len(df.index):
+        return print("|---- Simulación abortada --> No hay suficientes registros. Revisar frecuncia e intervalo de tiempo") 
+
+    sub_df.drop(df.tail(registros).index, inplace = True) # recorto los ultimos registros del DF
+    
     ## 3) Creación de escenarios, de acuerdo a método elegido
 
+    ultimo = len(sub_df.index)-2
+    comienzo = random.randint(1, ultimo) if inicio == False or metodo == "spot" else df.index[df["date"] == inicio][0]
+    
     escenarios_df = []
     intervalos_escenarios = []
     
     for i in range(n):
         if metodo == "spot":
-            # Fecha de comienzo aleatoria en cada caso
-            rango_disp = (fecha_inicio_max - primera_fecha) * 24 * 60 * 60
-            random_second = randrange(rango_disp)            
-            inicio = start + timedelta(seconds=random_second).replace(hour = 0, minute = 0, second = 0)
-            final = inicio + timedelta(days=dt)
+            final = comienzo + registros
         elif metodo == "cascada":
-            final = inicio + timedelta(days=dt)*(i+1)
+            final = comienzo + registros/(n-i)
         elif metodo == "desplazamiento":
-            inicio = inicio + timedelta(days=desplazamiento) if i > 0 else inicio
-            final = inicio + timedelta(days=dt)   
+            comienzo += desplazamiento * multiplicador if i > 0 else 0
+            final = comienzo + registros    
         
-        # Guardo lista de Dataframes y lista de intervalos
-        df_escenario = df[inicio : final]
+        # Guardo lista de Dataframes
+        df_escenario = df.loc[comienzo:final]
+        df_escenario['date'] = pd.to_datetime(df_escenario.date)    
+        df_escenario = df_escenario.set_index('date')
         escenarios_df.append(df_escenario)        
-        intervalos_escenarios.append([inicio, final])
+        
+        # Guardo lista intervalos
+        fecha_inicio = df["date"][comienzo]
+        fecha_final = df["date"][final]
+        intervalos_escenarios.append([fecha_inicio, fecha_final])
     
     ## 4) Creo lista de iterables para optimizar eficiencia de ciclado en ejecución
     lista_iterable = []
     for escenario_df in escenarios_df:
-        iterable = escenario_df.index#.to_numpy() #(DEVUELVE 2021-05-12T05:10:00.000000000 VER SI SE PUEDE ARREGLAR ESTO)
+        #iterable = escenario_df['date'].to_numpy().tolist()
+        #iterable = escenario_df.index.to_numpy().tolist()
+        iterable = escenario_df.index
         lista_iterable.append(iterable)
 
     ## 5) Ejecución de las simulaciones
@@ -121,7 +116,7 @@ def simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, monto_inicial
         for bot in bots:
             df_escenario = escenarios_df[i]
             print(f"---> Ejecuciones sobre escenario: {iterable[0]} al {iterable[-1]} <---")
-            ejecutor.ejecutar(bot, cripto, monto_inicial, df_escenario, iterable, notif)
+            ejecutor.ejecutar(bot, cripto, monto_inicial, df_escenario, iterable)
             
     print("Ejecuciones realizadas exitosamente =)")
     
@@ -159,7 +154,7 @@ def simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, monto_inicial
 
 start = timer() 
 
-simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, monto_inicial, freq, notif, *bots)
+simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, monto_inicial, freq, *bots)
 stop = timer()
 time = stop-start
 print(f"Tiempo invertido en realizar {n * len(bots)} simulaciones, con el metodo {metodo}: ", time)

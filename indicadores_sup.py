@@ -6,7 +6,6 @@ Created on Wed Nov  3 19:12:31 2021
 """
 #Analizador
 
-from timeit import default_timer as timer
 import pandas as pd
 import os
 import numpy as np
@@ -133,7 +132,6 @@ def SMA(df,cicles=1, addToDf=True):
         
         #Agrega columna al dataframe
         df[name] = sma
-        df[name] = df[name].round(2)
         return df
     
     else:
@@ -246,10 +244,9 @@ def RSI(df,cicles=1, addToDf=True):
     #print('RS:',rs)
 
     #RSI = 100 – 100/(1 + RS)
-    rsi = 100.0 - (100.0/(1.0 + rs))    
+    rsi = 100.0 - (100.0/(1.0 + rs))
     #print('RSI:--------------------')
     #print(rsi)
-    
     
     if addToDf==True:
         #Arma un nombre para la columna que se va a agregar al dataframe
@@ -257,8 +254,6 @@ def RSI(df,cicles=1, addToDf=True):
         
         #Agrega columna al dataframe
         df[name] = rsi
-        df[name] = df[name].round(2)
-
         return df
     
     else:
@@ -303,16 +298,13 @@ def BolingerBands(df, window_size=21, num_of_sd=2):
     upper_band = mean + (sd*num_of_sd) 
     lower_band = mean - (sd*num_of_sd)
     "bBandP_"+str(window_size)
-    df["bBandP_"+str(window_size)]= mean
+    df["bBandP_"+str(window_size)]=mean
     df["bBandUp_"+str(window_size)]=upper_band
     df["bBandDown_"+str(window_size)]=lower_band
-    df["bBandP_"+str(window_size)] = df["bBandP_"+str(window_size)].round(2)
-    df["bBandUp_"+str(window_size)] = df["bBandUp_"+str(window_size)].round(2)
-    df["bBandDown_"+str(window_size)] = df["bBandDown_"+str(window_size)].round(2)
     return df
 
 
-def getIndicadores(df, rsi=False, ma=[], bBand=[]):
+def getIndicadores(inicio='2021-03-01 00:00:00', fin='2021-11-02 00:00:00', file='Binance_BTCUSDT_d.csv', rsi=False, ma=[], bBand=[]):
     '''
     Parameters
     ----------
@@ -338,9 +330,17 @@ def getIndicadores(df, rsi=False, ma=[], bBand=[]):
 
     '''
     
+    # Levanta el dataframe.csv como serie temporal
+    archivo = file
+    fname = os.path.join(archivo)
+    df_raw = pd.read_csv(fname, index_col=['date'], parse_dates=True)
+    
+    # Filtra por lapso de tiempo
+    df_timed = df_raw[inicio:fin]
+    
     # Filtra por columnas de interés
     columnasDeInteres = ['open', 'high', 'low', 'close']
-    df_filtered = df[columnasDeInteres]
+    df_filtered = df_timed[columnasDeInteres]
     if rsi:
         df_filtered = RSI(df_filtered,cicles=rsi)
     if ma:
@@ -348,5 +348,6 @@ def getIndicadores(df, rsi=False, ma=[], bBand=[]):
             df_filtered = SMA(df_filtered,cicles=i)
     if bBand:
        BolingerBands(df_filtered, bBand[0], bBand[1])
+    df_filtered.to_csv("indicadores.csv")
     
     return df_filtered.iloc[::-1]

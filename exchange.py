@@ -104,7 +104,7 @@ class Exchange():
             tenencia[f'Tenencia en {cripto}'] += monto
 
         if cripto=="USDT":
-            tenencia[f'Tenencia en {cripto}'] = round (tenencia[f'Tenencia en {cripto}'], 2)
+            tenencia[f'Tenencia en {cripto}'] = round(tenencia[f'Tenencia en {cripto}'], 2)
         tenencia[f'Ultima modificacion'] = fecha
         registro = list(tenencia.values()) 
 
@@ -141,7 +141,7 @@ class Exchange():
         Recibe una transacción y registra los cambios en la billetera.
         Si el monto es positivo se toma como compra, si es negativo se toma como venta.
         '''
-        # Validacion por si la billetera está vacia
+        # Valido si la billetera está vacia
         if self.estaVacia() == True:
             return print("Primero es necesario ingresar dinero a tu billetera")
 
@@ -152,10 +152,9 @@ class Exchange():
         tenencia_cripto = float((tenencia[f'Tenencia en {cripto}']))
         tenencia_usdt = float(tenencia[f'Tenencia en USDT'])
         tenencia_cripto += monto_cripto
-        tenencia_usdt -= monto_usdt
-        
+        tenencia_usdt -= monto_usdt        
 
-        # Creo nuevo tenencia, actualizado
+        # Creo nueva tenencia, actualizada
         tenencia[f'Tenencia en {cripto}'] = tenencia_cripto
         tenencia[f'Tenencia en USDT'] = round(tenencia_usdt,2)
         tenencia[f'Ultima modificacion'] = fecha
@@ -166,7 +165,7 @@ class Exchange():
             writer = csv.writer(billetera)
             writer.writerow(registro)    
     
-    def comprar(self, cripto, monto_usdt, precio, fecha):
+    def comprar(self, cripto, monto_usdt, precio, fecha, notif):
         '''
         Recibe una cripto, el monto a desembolsar y el precio de compra y lo registra en el csv de transacciones.
         '''
@@ -194,9 +193,10 @@ class Exchange():
         # Actualizo billetera
         self.registrar(cripto, monto_cripto, monto_usdt, fecha)
 
-        return print("¡Compra realizada exitosamente!")
+        if notif:
+            return print("¡Compra realizada exitosamente!")
 
-    def vender(self, cripto, monto_cripto, precio, fecha):
+    def vender(self, cripto, monto_cripto, precio, fecha, notif):
         '''
         Recibe una cripto, el monto de la misma a vender y el precio de venta y lo registra en el csv de transacciones.
         '''
@@ -215,7 +215,7 @@ class Exchange():
         precio = float(precio)
         fee = 0.001 # Comisión del exchange, en este caso Binance
         monto_usdt = monto_cripto * precio * (1-fee)
-        monto_usdt = round(monto_usdt, 7) 
+        monto_usdt = round(monto_usdt, 1) 
         
         registro = [fecha, "Venta", monto_cripto, precio, monto_usdt]
         
@@ -227,7 +227,8 @@ class Exchange():
         # Actualizo billetera
         self.registrar(cripto, -monto_cripto, -monto_usdt, fecha)
 
-        return print("Venta realizada exitosamente!")
+        if notif:
+            return print("Venta realizada exitosamente!")
 
     
     def tenenciaMaximaEn(self, cripto, fecha = False):

@@ -1,7 +1,8 @@
 
 # Ignorados
-historial
-indicadores
-historial.csv
-indicadores
+
 *.csv
+
+Simulacion*/
+
+Ejecucion*/
