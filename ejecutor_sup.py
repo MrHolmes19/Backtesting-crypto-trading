@@ -5,7 +5,7 @@ import shutil
 import exchange
 import analizador
 import criterios
-import graficar
+import graficador
 import indicadores_sup
 
 def ejecutar(bot, cripto, monto_inicial, inicio, fin, BBDD):
@@ -65,7 +65,7 @@ def ejecutar(bot, cripto, monto_inicial, inicio, fin, BBDD):
         
         ## 8) Llamo a la funcion analizador pasandole una fila del df y un diccionario con los criterios del bot
         df_fila = df.loc[[i]]                            
-        criterio = analizador.analizador(df_fila, criterioBot)
+        criterio = analizador.analizar(df_fila, criterioBot)
         df.at[i, 'criterio'] = criterio
         
         ## 9) Con el valor del criterio y la disponibilidad en billetera: compro, vendo o holdeo
@@ -146,16 +146,16 @@ if __name__=="__main__":
     criterioBot = criterios.bots[bot]
     archivo = f'ejecucion-{bot}/historia-{bot}.csv'
     fname = os.path.join(archivo)
-    graficar.candlestickGraph(fname, f'{bot}', ["RSI", criterioBot["RSI"][1], criterioBot["RSI"][2] ], "bBands")
+    graficador.candlestickGraph(fname, f'{bot}', ["RSI", criterioBot["RSI"][1], criterioBot["RSI"][2] ], "bBands")
     
     
-    graficar.candlestickGraph(fname, f'{bot}')
+    graficador.candlestickGraph(fname, f'{bot}')
 
-    graficar.candlestickGraph(fname, f'{bot}', "bBands")
+    graficador.candlestickGraph(fname, f'{bot}', "bBands")
 
-    graficar.candlestickGraph(fname, f'{bot}', ["RSI", criterioBot["RSI"][1], criterioBot["RSI"][2] ], "bBands")
+    graficador.candlestickGraph(fname, f'{bot}', ["RSI", criterioBot["RSI"][1], criterioBot["RSI"][2] ], "bBands")
     
-    graficar.candlestickGraph(fname, f'{bot}', ["RSI", criterioBot["RSI"][1], criterioBot["RSI"][2] ], "bBands", f'ejecucion-{bot}/billetera.csv')
+    graficador.candlestickGraph(fname, f'{bot}', ["RSI", criterioBot["RSI"][1], criterioBot["RSI"][2] ], "bBands", f'ejecucion-{bot}/billetera.csv')
     '''
     
     

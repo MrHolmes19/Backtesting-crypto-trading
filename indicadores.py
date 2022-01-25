@@ -35,8 +35,11 @@ def DIFF(df,cicles=1, column='close', addToDf=True):
     
     #Calcula la diferencia operando con columnas
     W_col = df[column]
-    diff = W_col - W_col.shift(-cicles)
-    
+    # print('W_col:--------------------')
+    # print(W_col)
+    diff = W_col - W_col.shift(cicles)
+    # print('diff:--------------------')
+    # print(diff)
     if addToDf==True:
         #Arma un nombre para la columna que se va a agregar al dataframe
         name = 'Diff_'+str(cicles)+'c_'+column
@@ -83,11 +86,7 @@ def DERIVATE(df, cicles=1, column='close', addToDf=True):
     else:
         Diff_col = DIFF(df,cicles=cicles, column=column, addToDf=False)
 
-        
-
-
     deriv = Diff_col/float(cicles)
-    
     
     
     '''
@@ -122,7 +121,7 @@ def SMA(df,cicles=1, addToDf=True):
     #Calcula la media móvil operando con columnas
     sma = 0
     for i in range(cicles):
-        sma += df.close.shift(periods=-i)
+        sma += df.close.shift(periods=i)
     sma /= float(cicles)
     
 
@@ -201,7 +200,8 @@ def RSI(df,cicles=1, addToDf=True):
     #RS = EMA de ‘N’ períodos alcistas / EMA de ‘N’ períodos bajistas (en valor absoluto)
     column = 'close' #CAMBIAR A EMA_Xc
     diff = DIFF(df, column=column, addToDf=False)
-
+    # print('DIFF:--------------------')
+    # print(diff)
     
     '''
     comp = diff > 0
@@ -218,37 +218,38 @@ def RSI(df,cicles=1, addToDf=True):
     print('neg_sum:',neg_sum)
     '''
     mask = diff < 0
+    # print('MASK:--------------------')
+    # print(mask)
     pos_diff = diff.copy()
     pos_diff.loc[mask] = 0
-    #print('POS DIFF:--------------------')
-    #print(pos_diff)
+    # print('POS DIFF:--------------------')
+    # print(pos_diff)
     
     pos_sum = 0
     for i in range(cicles):
-        pos_sum += pos_diff.shift(periods=-i)
-    
-    #print('POS SUM:--------------------')
-    #print(pos_sum)
+        pos_sum += pos_diff.shift(periods=i)
+    # print('POS SUM:--------------------')
+    # print(pos_sum)
     
     neg_diff = diff.copy()
     neg_diff.loc[~mask] = 0
-    #print('NEG DIFF:--------------------')
-    #print(neg_diff)
+    # print('NEG DIFF:--------------------')
+    # print(neg_diff)
 
     neg_sum = 0
     for i in range(cicles):
-        neg_sum += neg_diff.shift(periods=-i)
+        neg_sum += neg_diff.shift(periods=i)
     neg_sum *= -1.0
-    #print('NEG SUM:--------------------')
-    #print(neg_sum)
+    # print('NEG SUM:--------------------')
+    # print(neg_sum)
     
     rs = pos_sum/neg_sum
-    #print('RS:',rs)
+    # print('RS:',rs)
 
     #RSI = 100 – 100/(1 + RS)
     rsi = 100.0 - (100.0/(1.0 + rs))    
-    #print('RSI:--------------------')
-    #print(rsi)
+    # print('RSI:--------------------')
+    # print(rsi)
     
     
     if addToDf==True:
@@ -298,8 +299,14 @@ def BolingerBands(df, window_size=21, num_of_sd=2):
 
     '''
     close = df["close"]
+    # print("------ close ----------")
+    # print(close)
     mean = close.rolling(window=window_size).mean() 
+    # print("------ mean ----------")
+    # print(mean)
     sd = close.rolling(window=window_size).std() 
+    # print("------ SD ----------")
+    # print(sd)
     upper_band = mean + (sd*num_of_sd) 
     lower_band = mean - (sd*num_of_sd)
     "bBandP_"+str(window_size)
@@ -341,6 +348,7 @@ def getIndicadores(df, rsi=False, ma=[], bBand=[]):
     # Filtra por columnas de interés
     columnasDeInteres = ['open', 'high', 'low', 'close']
     df_filtered = df[columnasDeInteres]
+    #df_filtered = df_filtered.loc[::-1]
     if rsi:
         df_filtered = RSI(df_filtered,cicles=rsi)
     if ma:
@@ -348,5 +356,4 @@ def getIndicadores(df, rsi=False, ma=[], bBand=[]):
             df_filtered = SMA(df_filtered,cicles=i)
     if bBand:
        BolingerBands(df_filtered, bBand[0], bBand[1])
-    
-    return df_filtered.iloc[::-1]
+    return df_filtered#.iloc[::-1]

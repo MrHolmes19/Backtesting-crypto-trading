@@ -194,7 +194,7 @@ class Exchange():
         self.registrar(cripto, monto_cripto, monto_usdt, fecha)
 
         if notif:
-            return print("¡Compra realizada exitosamente!")
+            return print(f"¡Compra realizada exitosamente a {round(precio,2)}, el {fecha}!")
 
     def vender(self, cripto, monto_cripto, precio, fecha, notif):
         '''
@@ -228,7 +228,7 @@ class Exchange():
         self.registrar(cripto, -monto_cripto, -monto_usdt, fecha)
 
         if notif:
-            return print("Venta realizada exitosamente!")
+            return print(f"Venta realizada exitosamente a {round(precio,2)}, el {fecha}!!")
 
     
     def tenenciaMaximaEn(self, cripto, fecha = False):

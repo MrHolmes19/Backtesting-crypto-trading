@@ -1,5 +1,5 @@
 import indicadores
-import graficar
+import graficador
 import os
 import pandas as pd
 import criterios
@@ -57,6 +57,7 @@ def mirarRSI(row, bot):
         
 
     '''
+    
     rsi = "RSI_"+str(bot["RSI"][0])
     minimo = bot["RSI"][1]
     maximo = bot["RSI"][2]
@@ -129,7 +130,7 @@ def ma_cross(row, bot):
     if row[slow][0]<row[fast][0]:
         return "Vender"
          
-def analizador(row, bot):
+def analizar(row, bot):
     '''
     row : Pandas.DataSeries
         Fila de un dataseries

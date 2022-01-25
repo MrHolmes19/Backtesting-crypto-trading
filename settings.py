@@ -18,10 +18,10 @@ fuente = f'{os.path.dirname(os.path.realpath(__file__))}/{BBDD}'
 escenarios = 1
 
 ## 4) Longitud del intervalo de tiempo (En dias)
-intervalo_tiempo = 70
+intervalo_tiempo = 365
 
 ## 5) Fecha de inicio preseteada (Pasar String o False)
-fecha_inicio = "10/11/2021 00:00:00"  # Formato d/m/a h:m:s
+fecha_inicio = "01/01/2021 00:00:00"  # Formato d/m/a h:m:s
 #fecha_inicio = False
 
 ## 6) Metodo de muestreo 
@@ -33,15 +33,25 @@ fecha_inicio = "10/11/2021 00:00:00"  # Formato d/m/a h:m:s
 metodo = "desplazamiento"
 
 ## Desplazamiento en dias (Siempre activo, solo hace efecto en el metodo desplazamiento)
-desplazamiento = 7
+desplazamiento = 30
 
 ## 7) Lista de bots que participan en la simulacion
 bots = [
-    #"bot1",
-    #"bot2",
-    #"bot3",
-    #"bot4",
-    "bot5",
+    "bot1",
+    "bot2",
+    "bot3",
+    # "bot4",
+    # "bot5",
+    # "bot6",
+    # "bot7",
+    # "bot8",
+    # "bot9",
+    # "bot10",
+    # "bot11",
+    # "bot12",
+    # "bot13",
+    # "bot14",
+    # "bot15",
 ]
 
 ## 8) Dinero inicial que se carga a la billetera

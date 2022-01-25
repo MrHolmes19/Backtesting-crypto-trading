@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 from timeit import default_timer as timer
 import shutil
 
-## Importo variables preseteadas
+## 0) Importo variables preseteadas
 
 BBDD = settings.BBDD
 cripto = settings.cripto
@@ -42,7 +42,7 @@ def simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, monto_inicial
     
     # filtro por los campos de interes
     try:
-        cols = ['date', 'open', 'high', 'low', 'close',f"Volume {cripto}","Volume USDT","tradecount"]
+        cols = ['date', 'open', 'high', 'low', 'close','volume', 'number of trades'] # f"Volume {cripto}","Volume USDT","tradecount"
         df = df_base[cols]
     except:
         return print("|---- Simulación abortada --> La base de datos ingerida no posee los campos necesarios")
@@ -54,35 +54,34 @@ def simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, monto_inicial
         return print("|---- Simulación abortada --> El formato de fecha del Dataset es distinto al que se espera: 'Y-M-D H:M:S'")
     
     # Lo doy vuelta
-    df = df.loc[::-1].reset_index(drop=True)
+    # df = df.loc[::-1].reset_index(drop=True) # NO ES NECESARIO CON EL DATASET EXTRAIDO DE BINANCE
     
     ## 2) Acoto el df al intervalo de interés para la creación de escenarios 
     #     (Mayor eficiencia y evito errores de indexación)
 
     if metodo == "desplazamiento":
-        dias_limite = dt + desplazamiento * n
+        dias_limite = dt + desplazamiento * n if n > 1 else dt
     elif metodo == "cascada":
         dias_limite = dt * n
     elif metodo == "spot":
         dias_limite = dt
     else:
-        print(f"|---- Simulacion abortada --> Falta definir método de estudio de escenarios")
+        return print(f"|---- Simulacion abortada --> Falta definir método de estudio de escenarios")
     
     primera_fecha = df["date"].iloc[1]
     ultima_fecha = df["date"].iloc[-1]
     fecha_inicio_max = ultima_fecha - timedelta(days=dias_limite)
-
     if inicio and metodo !="spot":
         inicio = datetime.strptime(inicio, "%d/%m/%Y %H:%M:%S")
         if inicio > fecha_inicio_max:
-            print(f"Simulacion abortada --> Para el escenario elegido, la fecha maxima de inicio es:{fecha_inicio_max}. Modifique la fecha")
+            return print(f"|---- Simulacion abortada --> Para el escenario elegido, la fecha maxima de inicio es:{fecha_inicio_max}. Modifique la fecha")
     else:
         inicio = primera_fecha
 
     fin = inicio + timedelta(days=dias_limite)        
     
     df = df.set_index('date') # Fechas como indice
-    df = df[inicio : fin]    
+    df = df[inicio : fin]    # TOMAR QUINCE REGISTROS ANTERIORES PARA LOS INDICADORES
             
     ## 3) Creación de escenarios, de acuerdo a método elegido
 
