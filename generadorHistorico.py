@@ -80,10 +80,13 @@ def getHistoric(crypto="ETHUSDT", kline=Client.KLINE_INTERVAL_1MINUTE, periodo="
 if __name__=="__main__":
   start = timer()
   
-  df = getHistoric(crypto = "BTCUSDT", kline=Client.KLINE_INTERVAL_1MINUTE, periodo = "388 day ago UTC-3")
+  cripto = "ETH"
+  velas = "m"
+  
+  df = getHistoric(crypto = f"{cripto}USDT", kline=Client.KLINE_INTERVAL_1MINUTE, periodo = "1460 day ago UTC-3")
 
   print(df)
-  df.to_csv("Binance_BTCUSDT_m.csv", encoding='utf-8', index=True)
+  df.to_csv(f"Binance_{cripto}USDT_{velas}.csv", encoding='utf-8', index=True)
   
   stop = timer()
   time = stop-start

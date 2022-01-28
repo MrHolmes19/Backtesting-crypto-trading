@@ -6,7 +6,7 @@ from timeit import default_timer as timer
 from itertools import tee
 import os
 
-fuente = f'{os.path.dirname(os.path.realpath(__file__))}\historial-BTC.csv'
+fuente = f'{os.path.dirname(os.path.realpath(__file__))}\Binance_BTCUSDT_m.csv'
 df = pd.read_csv(fuente)
 #df = df.loc[1:10080] # Una semana
 #df = df.loc[1:43200] # Un mes
@@ -111,7 +111,7 @@ def dataframeIndex():
     
 # TEST DE VELOCIDAD PARA CICLAR FECHAS
 
-'''
+
 #iterrow()
 itertuples()
 nparrays()
@@ -119,7 +119,7 @@ dict()
 arraysList()
 dataframeIndex()
 #generadorIterador()  
-'''
+
 
 # ------------------------------------ METODOS DE CONVERSION FECHAS -----------------------------------
 
@@ -140,6 +140,7 @@ time = stop-start
 print("Tiempo invertido en pasar todo a Datetime CON formato: ", time)
 '''
 
+'''
 start = timer() 
 dates = pd.date_range(pd.Timestamp.min, pd.Timestamp.max)
 date_mappings = pd.Series(dates, index=dates.strftime('%d/%m/%Y %H:%M'), name='date')
@@ -149,3 +150,4 @@ stop = timer()
 time = stop-start
 print("Tiempo invertido en pasar todo a Datetime CON hack: ", time)
 print(df)
+'''

@@ -10,10 +10,13 @@ import analizador
 import criterios
 import graficador
 import indicadores
+import time
 
 def ejecutar(bot, cripto, monto_inicial, df_base, iterable, notif):
     
     print (f"{bot} - Comienzo de ejecución...")
+    print("// Inicio //")
+    start = time.process_time() 
     ## 1) Obtengo el diccionario con los criterios del bot
     criterioBot = criterios.bots[bot]
     
@@ -24,7 +27,8 @@ def ejecutar(bot, cripto, monto_inicial, df_base, iterable, notif):
     
     ## 3) Genero el DF con los indicadores correspondientes que demanda el bot
     df = indicadores.getIndicadores(df_base, rsi=rsi, ma=ma, bBand=bBand)    
-
+    print("// Despues de crear indicadores //")
+    print(time.process_time() - start)
     ## Sumo nuevas columnas a ese Dataframe  (Esto CREO que podria no estar)
     df["criterio"] = ""
     df["transaccion"] = ""
@@ -37,7 +41,8 @@ def ejecutar(bot, cripto, monto_inicial, df_base, iterable, notif):
     fecha_inicial = iterable[0]   
     fecha_final = iterable[-1] 
     cex.ingresar("USDT", monto_inicial, fecha_inicial)
-                   
+    print("// Despues de crear billetera y cargar plata //")
+    print(time.process_time() - start)               
     ## 5) Ciclo fecha por fecha
     print (f"{bot} - Empezando el ciclo...")
     
@@ -47,7 +52,8 @@ def ejecutar(bot, cripto, monto_inicial, df_base, iterable, notif):
         df_fila = df.loc[[i]]                            
         criterio = analizador.analizar(df_fila, criterioBot)
         df.at[i, 'criterio'] = criterio
-        
+        # print("// Despues de recibir el criterio del analizador //")
+        # print(time.process_time() - start)  
         ## 7) Con el valor del criterio y la disponibilidad en billetera: compro, vendo o holdeo        
         if criterio != "Holdear":
             tenencia_usdt = cex.tenencia("USDT")
@@ -64,17 +70,18 @@ def ejecutar(bot, cripto, monto_inicial, df_base, iterable, notif):
                 monto_cripto = tenencia_cripto # Construir logica de fraccionado
                 cex.vender(cripto, monto_cripto, precio, i, notif)
                 df.at[i, 'transaccion'] = "venta"  
-                df.at[i, 'monto'] = monto_cripto
-                      
+                df.at[i, 'monto'] = monto_cripto          
         else:
             df.at[i, 'transaccion'] = "NA"
-    
+    print("// Despues de terminar el ciclo de ejecuciones//")
+    print(time.process_time() - start) 
     print (f"{bot} - Fin del ciclo. Guardando resultados...")
     
     ## 8) Guardo Dataframe en un csv
     nombre_historia = f'historia.csv'
-    #df = df.iloc[::-1]
     df.to_csv(nombre_historia)
+    print("// Despues de convertir a csv//")
+    print(time.process_time() - start) 
     
     ## 9) Creo carpeta de la ejecucion y llevo todos los CSVs allí    
     try:
@@ -97,7 +104,8 @@ def ejecutar(bot, cripto, monto_inicial, df_base, iterable, notif):
         shutil.move(os.path.join(raiz,csv), os.path.join(raiz,carpeta,csv))
     
     print (f"{bot} - ¡ Ejecucion finalizada !")    
-   
+    print("// Despues de mover las carpetas//")
+    print(time.process_time() - start) 
     
 if __name__=="__main__":
     '''
@@ -107,8 +115,8 @@ if __name__=="__main__":
     bot = "bot5"
     cripto = "BTC"
     monto_inicial = 1000
-    inicio='27/09/2021 00:00:00'
-    fin='20/10/2021 17:00:00'
+    inicio='19/03/2020 10:00:00'
+    fin='19/03/2020 11:00:00'
     frequencia = "m"  # Frecuencia de velas (m: minuto / h: hora / d: dia)
     notif = True # Muestra o no notificaciones de compra y venta
     BBDD = f'Binance_{cripto}USDT_{frequencia}.csv'
