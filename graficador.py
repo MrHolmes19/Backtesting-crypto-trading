@@ -9,55 +9,8 @@ import os
 from matplotlib import gridspec
 
 
-
 # Esta funcion trae un DataFrame directo de binance, por el momento no se utiliza
 # Sirvio para el testeo, y en un futuro servira para tomar datos on-line
-
-def getHistoric(crypto="ETHUSDT", kline=Client.KLINE_INTERVAL_1MINUTE, periodo="1 day ago UTC-3"):
-    '''
-    Parameters
-    ----------
-    crypto : String
-        Moneda a recuperar datos. Ej "ETHUSDT"
-    periodo: String
-        Delta de tiempo de los datos. Default: "1day ago UTC-3"
-
-    Returns
-    -------
-    df : Pandas.DataFrame
-        Devuelve un dataframe con el siguiente formato
-        index = DateTime
-        Columns = "Open", "High", "Low", "Close", "Volume"
-
-    '''
-    client = Client(config.API_KEY, config.API_SECRET)
-    klines = client.get_historical_klines(crypto, kline, periodo)
-    
-    df = pd.DataFrame(klines,  columns=['date',
-                                        'open',
-                                        'high',
-                                        'low',
-                                        'close',
-                                        'volume',
-                                        'close time',
-                                        'quote asset volume',
-                                        'number of trades',
-                                        'taker buy base asset volume',
-                                        'taker buy quote asset volume',
-                                        'ignore'])
-    
-    df = df.drop(df.columns[[6, 7, 8, 9, 10, 11]], axis=1)
-    df['date'] = pd.to_datetime(df['date'], unit='ms')
-    df.set_index('date', inplace=True, drop=True)
-    
-    df['open']   = df['open'].astype(float)
-    df['high']   = df['high'].astype(float)
-    df['low']    = df['low'].astype(float)
-    df['close']  = df['close'].astype(float)
-    df['volume'] = df['volume'].astype(float)
-    
-    return df
-
 
 
 def candlestickGraph(df, title="", *args):

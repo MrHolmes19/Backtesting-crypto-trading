@@ -102,7 +102,7 @@ def Comparar(dir_simulacion, carpetas_escenarios, intervalos_escenarios, cripto,
 
   df_resultados.to_excel(writer, sheet_name='resultados', index=False, startrow=1, header=False)
 
-  # Genero un objeto Workbook y uno Worksheet de xslwriter
+  # Genero un objeto Workbook y un Worksheet de xslwriter
   wb  = writer.book
   ws = writer.sheets['resultados']
   # ws.set_zoom(90)

@@ -112,11 +112,11 @@ if __name__=="__main__":
     Permite correr el ejecutor desde este archivo, para hacer pruebas unitarias.
     '''
     ## Variables:
-    bot = "bot5"
+    bot = "bot1"
     cripto = "BTC"
     monto_inicial = 1000
-    inicio='19/03/2020 10:00:00'
-    fin='19/03/2020 11:00:00'
+    inicio='01/01/2021 00:00:00'
+    fin='01/01/2021 12:00:00'
     frequencia = "m"  # Frecuencia de velas (m: minuto / h: hora / d: dia)
     notif = True # Muestra o no notificaciones de compra y venta
     BBDD = f'Binance_{cripto}USDT_{frequencia}.csv'
@@ -127,7 +127,6 @@ if __name__=="__main__":
     cols = ['date', 'open', 'high', 'low', 'close', 'volume', 'number of trades'] # f"Volume {cripto}","Volume USDT","tradecount"
     df = df_base[cols]
     df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d %H:%M:%S')
-    #df = df.loc[::-1].reset_index(drop=True) #(NO ES NECESARIO CON NUEVO DATASET, VIENE ORDENADO)
     inicio = datetime.strptime(inicio, "%d/%m/%Y %H:%M:%S")
     fin = datetime.strptime(fin, "%d/%m/%Y %H:%M:%S")
     df = df.set_index('date')
@@ -142,8 +141,7 @@ if __name__=="__main__":
     print("Tiempo en ejecutar: ", time)
     
     # GRAFICOS (PARA PRUEBA)
-    
-    
+        
     print("Armando grafico...")
     start = timer()
     criterioBot = criterios.bots[bot]
@@ -153,13 +151,15 @@ if __name__=="__main__":
     archivo2 = f"Ejecucion-{bot}_{fecha_inicial}_{fecha_final}/billetera.csv"
     fname = os.path.join(archivo)
     
-    #graficar.candlestickGraph(fname, f'{bot}', ["RSI", criterioBot["RSI"][1], criterioBot["RSI"][2] ], "bBands")    
+    graficador.candlestickGraph(fname)
     
-    #graficar.candlestickGraph(fname, f'{bot}')
+    #graficador.candlestickGraph(fname, f'{bot}', ["RSI", criterioBot["RSI"][1], criterioBot["RSI"][2] ], "bBands")    
+    
+    #graficador.candlestickGraph(fname, f'{bot}')
 
-    #graficar.candlestickGraph(fname, f'{bot}', "bBands")   
+    #graficador.candlestickGraph(fname, f'{bot}', "bBands")   
     
-    #graficar.candlestickGraph(fname, f'{bot}', ["RSI", criterioBot["RSI"][1], criterioBot["RSI"][2] ], "bBands", archivo2)
+    #graficador.candlestickGraph(fname, f'{bot}', ["RSI", criterioBot["RSI"][1], criterioBot["RSI"][2] ], "bBands", archivo2)
     
     print("Graficos finalizados. Fin del Test")
     
