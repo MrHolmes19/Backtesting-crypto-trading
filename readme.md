@@ -5,17 +5,17 @@
 
 ## PROJECT SUMMARY
 
-### Presentation
+### <ins>Presentation</ins>
 
 This platform is used to test different trading strategies, on any financial asset (cryptocurrencies), on past data (From 2017 to the present). It is based on indicators, although the code can be modified allowing the strategies to become more complex.
 
 
-### Applied technologies
+### <ins>Applied technologies</ins>
 
 It was developed entirely in Python and its data management libraries (Pandas, Numpy, Matplotlib, etc).
 
 
-### Authors
+### <ins>Authors</ins>
 
 Work done in collaboration, by:
 - Leandro Marquez (lnmarquez19@gmail.com)
@@ -26,7 +26,7 @@ Work done in collaboration, by:
 
 ### Operating diagrams
 
-#### Execution layer
+#### <ins>Execution layer</ins>
 
 It allows running a particular simulation, being able to choose:
 * Cryptocurrency
@@ -37,7 +37,7 @@ It allows running a particular simulation, being able to choose:
 
 <p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/execution-diagram.png?raw=true" width="800" align="center"> </p>
 
-#### Simulation Layer
+#### <ins>Simulation Layer</ins>
 
 It allows running a series of simulations simultaneously, being able to choose:
 * Cryptocurrency
@@ -69,17 +69,17 @@ It allows running a series of simulations simultaneously, being able to choose:
 
 ### Records of transactions, holding and decision history
 
-<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/results-folders.png?raw=true" width="400" align= "center"> </p>
+<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/resultados-carpetas.png?raw=true" width="400" align="center"> </p>
 
-<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/results-csv.png?raw=true" width="400" align= "center"> </p>
+<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/resultados-csv.png?raw=true" width="400" align="center"> </p>
 
 ### comparative table of results
 
-<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/comparison-results-xls.png?raw=true" width="800" align="center"> </p>
+<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/resultados-comparacion-xls.png?raw=true" width="800" align="center"> </p>
 
 ### Graphics
 
-<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/results-plot2.png?raw=true" width="800" align= "center"> </p> 
+<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/resultados-plot2.png?raw=true" width="800" align="center"> </p>
 
 
 ## USAGE

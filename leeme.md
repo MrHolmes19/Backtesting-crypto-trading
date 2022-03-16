@@ -3,17 +3,17 @@
 
 ## RESUMEN DEL PROYECTO
 
-### Presentación
+### <ins>Presentación</ins>
 
 Esta plataforma sirve para probar distintas estrategias de trading, sobre cualquier activo financieros (criptomonedas), sobre datos pasados (Desde 2017 hasta el presente). Está basado en indicadores, aunque el código puede modificarse permitiendo complejizar las estrategias.
 
 
-### Tecnologías aplicadas
+### <ins>Tecnologías aplicadas</ins>
 
 Fue desarrollado integramente en Python y sus librerias para manejo de datos (Pandas, Numpy, Matplotlib, etc).
 
 
-### Autores
+### <ins>Autores</ins>
 
 Trabajo realizado en colaboración, por:
 - Leandro Márquez (lnmarquez19@gmail.com)
@@ -24,7 +24,7 @@ Trabajo realizado en colaboración, por:
 
 ### Esquemas de funcionamiento
 
-#### Capa de ejecución
+#### <ins>Capa de ejecución</ins>
 
 Permite correr una simulación en particular, pudiendo elegir:
 * Criptomoneda
@@ -33,10 +33,10 @@ Permite correr una simulación en particular, pudiendo elegir:
 * Bot (que contiene los criterios de compra y venta)
 * Fechas de inicio y fin
 
-<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/diagrama-ejecutor.png?raw=true" width="800" align="center"> </p>
+<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/diagrama-ejecutor.png?raw=true" width="800" align="center"> </p>
 
 
-#### Capa de simulación
+#### <ins>Capa de simulación</ins>
 
 Permite correr una serie de simulaciones en simultaneo, pudiendo elegir:
 * Criptomoneda
@@ -47,7 +47,7 @@ Permite correr una serie de simulaciones en simultaneo, pudiendo elegir:
 * Método de muestreo
 * Fechas de inicio y fin
 
-<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/diagrama-capa-simulacion.png?raw=true" width="800" align="center"> </p>
+<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/diagrama-capa-simulacion.png?raw=true" width="800" align="center"> </p>
 
 
 ### Explicacion del código
@@ -69,17 +69,17 @@ Permite correr una serie de simulaciones en simultaneo, pudiendo elegir:
 
 ### Registros de transacciones, tenencia e historial de decisiones
 
-<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/resultados-carpetas.png?raw=true" width="400" align="center"> </p>
+<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/resultados-carpetas.png?raw=true" width="400" align="center"> </p>
 
-<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/resultados-csv.png?raw=true" width="400" align="center"> </p>
+<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/resultados-csv.png?raw=true" width="400" align="center"> </p>
 
 ### tabla comparativa de resultados
 
-<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/resultados-comparacion-xls.png?raw=true" width="800" align="center"> </p>
+<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/resultados-comparacion-xls.png?raw=true" width="800" align="center"> </p>
 
 ### Graficos
 
-<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/resultados-plot2.png?raw=true" width="800" align="center"> </p>
+<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/resultados-plot2.png?raw=true" width="800" align="center"> </p>
 
 
 ## USO
