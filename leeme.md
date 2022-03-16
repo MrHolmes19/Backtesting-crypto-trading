@@ -20,7 +20,7 @@ Trabajo realizado en colaboración, por:
 - Andrés Muzlera (amuzlera@gmail.com)
 
 
-## FUNCIONAMIENTO DE LA PLATAFORMA
+## CONSTRUCCION DE LA PLATAFORMA
 
 ### Esquemas de funcionamiento
 
@@ -69,9 +69,9 @@ Permite correr una serie de simulaciones en simultaneo, pudiendo elegir:
 
 ### Registros de transacciones, tenencia e historial de decisiones
 
-<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/resultados-carpetas.png?raw=true" width="800" align="center"> </p>
+<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/resultados-carpetas.png?raw=true" width="400" align="center"> </p>
 
-<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/resultados-csv.png?raw=true" width="800" align="center"> </p>
+<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/resultados-csv.png?raw=true" width="400" align="center"> </p>
 
 ### tabla comparativa de resultados
 
@@ -80,3 +80,19 @@ Permite correr una serie de simulaciones en simultaneo, pudiendo elegir:
 ### Graficos
 
 <p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/resultados-plot2.png?raw=true" width="800" align="center"> </p>
+
+
+## USO
+
+1) Correr archivo generadorHistorico.py entre ciertas fechas (Esto puede tardar).
+2) Modificar el archivo criterios.py con los valores umbrales de compra y venta, asi como los indicadores. (Asi como está el código, solo reconocerá RSI, medias y Bandas de Bollinger). Si se quiere agregar otras, debe modificarse el codigo en indicadores.py y en analizador.py.
+4) Modificar el archivo settings.py eligiendo la combinacion de parametros que se desea probar
+(Tener en cuenta que el intervalo de prueba debe estar dentro del rango existente en el dataset descargado).
+5) Correr el archivo simulador.py (Puede tardar si se eligen fechas muy extensas, velas muy chicas, muchos escenarios, intervalos grandes o muchos bots distintos).
+5.alt) Correr el archivo ejecutor.py para testear un solo caso.
+6) Observar los resultados
+
+
+## BACKTESTING PLATFORM 2.0
+
+Desarrollamos una nueva versión de esta plataforma, que hace lo mismo pero 10, 20, 50 o 100 veces más rápido, usando Numpy en lugar de ciclar registro por registro. No es un trabajo que podamos compartir, pero dejamos la idea.
