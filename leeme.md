@@ -69,9 +69,9 @@ Permite correr una serie de simulaciones en simultaneo, pudiendo elegir:
 
 ### Registros de transacciones, tenencia e historial de decisiones
 
-<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/resultados-carpetas.png?raw=true" width="400" align="center"> </p>
+<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/resultados-carpetas.png?raw=true" width="600" align="center"> </p>
 
-<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/resultados-csv.png?raw=true" width="400" align="center"> </p>
+<p align="center"> <img src="https://github.com/MrHolmes19/Backtesting-crypto-trading/blob/main/images/resultados-csv.png?raw=true" width="600" align="center"> </p>
 
 ### tabla comparativa de resultados
 
