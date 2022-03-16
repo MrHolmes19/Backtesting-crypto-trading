@@ -53,9 +53,6 @@ fuente = f'{os.path.dirname(os.path.realpath(__file__))}/{BBDD}'
 df = pd.read_csv(fuente, index_col=['date'], parse_dates=True)
 df = df[columnasDeInteres]
 
-def first(x):
-  return x[0]
-
 close = df["close"]
 for i, p in enumerate(periodos):
   df[f'dif_+{p[0]}'] = round(abs(close.rolling(window=p[1]).max()/close.shift(p[1]-1) - 1),5)

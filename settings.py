@@ -10,10 +10,10 @@ cripto = "BTC"
 frequencia = "m" # (m: minuto / h: hora / d: dia)
 
 ## 3) Cantidad de escenarios en los que vamos a correr la simulación (Cant. de intervalos de tiempo)
-escenarios = 1
+escenarios = 3
 
 ## 4) Longitud del intervalo de tiempo (En dias)
-intervalo_tiempo = 1
+intervalo_tiempo = 15
 
 ## 5) Fecha de inicio preseteada (sPasar String, False para aleatorio o de la lista fechas)
 fecha_inicio = "01/01/2021 00:00:00"  # Formato d/m/a h:m:s
@@ -29,17 +29,17 @@ fecha_inicio = "01/01/2021 00:00:00"  # Formato d/m/a h:m:s
 metodo = "desplazamiento"
 
 ## Desplazamiento en dias (Siempre activo, solo hace efecto en el metodo desplazamiento)
-desplazamiento = 10
+desplazamiento = 15
 
 ## 7) Lista de bots que participan en la simulacion
 bots = [
-    # "bot1",
-    # "bot2",
-    # "bot3",
-    # "bot4",
-     "bot5",
-    # "bot6",
-    # "bot7",
+    "bot1",
+    "bot2",
+    "bot3",
+    "bot4",
+    "bot5",
+    #"bot6",
+    #"bot7",
     # "bot8",
     # "bot9",
     # "bot10",

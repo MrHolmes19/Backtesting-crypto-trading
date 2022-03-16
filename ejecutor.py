@@ -15,8 +15,7 @@ import time
 def ejecutar(bot, cripto, monto_inicial, df_base, iterable, notif):
     
     print (f"{bot} - Comienzo de ejecución...")
-    print("// Inicio //")
-    start = time.process_time() 
+
     ## 1) Obtengo el diccionario con los criterios del bot
     criterioBot = criterios.bots[bot]
     
@@ -27,8 +26,7 @@ def ejecutar(bot, cripto, monto_inicial, df_base, iterable, notif):
     
     ## 3) Genero el DF con los indicadores correspondientes que demanda el bot
     df = indicadores.getIndicadores(df_base, rsi=rsi, ma=ma, bBand=bBand)    
-    print("// Despues de crear indicadores //")
-    print(time.process_time() - start)
+    
     ## Sumo nuevas columnas a ese Dataframe  (Esto CREO que podria no estar)
     df["criterio"] = ""
     df["transaccion"] = ""
@@ -41,8 +39,7 @@ def ejecutar(bot, cripto, monto_inicial, df_base, iterable, notif):
     fecha_inicial = iterable[0]   
     fecha_final = iterable[-1] 
     cex.ingresar("USDT", monto_inicial, fecha_inicial)
-    print("// Despues de crear billetera y cargar plata //")
-    print(time.process_time() - start)               
+           
     ## 5) Ciclo fecha por fecha
     print (f"{bot} - Empezando el ciclo...")
     
@@ -52,8 +49,7 @@ def ejecutar(bot, cripto, monto_inicial, df_base, iterable, notif):
         df_fila = df.loc[[i]]                            
         criterio = analizador.analizar(df_fila, criterioBot)
         df.at[i, 'criterio'] = criterio
-        # print("// Despues de recibir el criterio del analizador //")
-        # print(time.process_time() - start)  
+
         ## 7) Con el valor del criterio y la disponibilidad en billetera: compro, vendo o holdeo        
         if criterio != "Holdear":
             tenencia_usdt = cex.tenencia("USDT")
@@ -73,15 +69,12 @@ def ejecutar(bot, cripto, monto_inicial, df_base, iterable, notif):
                 df.at[i, 'monto'] = monto_cripto          
         else:
             df.at[i, 'transaccion'] = "NA"
-    print("// Despues de terminar el ciclo de ejecuciones//")
-    print(time.process_time() - start) 
+
     print (f"{bot} - Fin del ciclo. Guardando resultados...")
     
     ## 8) Guardo Dataframe en un csv
     nombre_historia = f'historia.csv'
     df.to_csv(nombre_historia)
-    print("// Despues de convertir a csv//")
-    print(time.process_time() - start) 
     
     ## 9) Creo carpeta de la ejecucion y llevo todos los CSVs allí    
     try:
@@ -104,15 +97,13 @@ def ejecutar(bot, cripto, monto_inicial, df_base, iterable, notif):
         shutil.move(os.path.join(raiz,csv), os.path.join(raiz,carpeta,csv))
     
     print (f"{bot} - ¡ Ejecucion finalizada !")    
-    print("// Despues de mover las carpetas//")
-    print(time.process_time() - start) 
     
 if __name__=="__main__":
     '''
     Permite correr el ejecutor desde este archivo, para hacer pruebas unitarias.
     '''
     ## Variables:
-    bot = "bot1"
+    bot = "bot5"
     cripto = "BTC"
     monto_inicial = 1000
     inicio='01/01/2021 00:00:00'
@@ -143,7 +134,7 @@ if __name__=="__main__":
     # GRAFICOS (PARA PRUEBA)
         
     print("Armando grafico...")
-    start = timer()
+
     criterioBot = criterios.bots[bot]
     fecha_inicial = inicio.strftime('%d-%m-%Y')
     fecha_final = fin.strftime('%d-%m-%Y')
@@ -159,13 +150,9 @@ if __name__=="__main__":
 
     #graficador.candlestickGraph(fname, f'{bot}', "bBands")   
     
-    #graficador.candlestickGraph(fname, f'{bot}', ["RSI", criterioBot["RSI"][1], criterioBot["RSI"][2] ], "bBands", archivo2)
+    graficador.candlestickGraph(fname, f'{bot}', ["RSI", criterioBot["RSI"][1], criterioBot["RSI"][2] ], "bBands", archivo2)
     
     print("Graficos finalizados. Fin del Test")
-    
-    stop = timer()
-    time = stop-start
-    print("Tiempo en graficar: ", time)
     
     
     

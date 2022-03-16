@@ -1,28 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Nov  3 19:12:31 2021
-
-@author: Gabriel Kubat Jacques, Macarena Alonso
-"""
-#Analizador
-
 from timeit import default_timer as timer
 import pandas as pd
 import os
 import numpy as np
-
-#Levanta el dataframe.csv como serie temporal
-archivo = 'Binance_BTCUSDT_d.csv'
-fname = os.path.join(archivo)
-df_raw = pd.read_csv(fname, index_col=['date'], parse_dates=True)
-
-#Filtrar por lapso de tiempo
-df_timed = df_raw['2021-09-01 00:00:00':'2021-11-03 00:00:00']
-
-#Filtra por columnas de interés
-columnasDeInteres = ['open', 'high', 'low', 'close']
-#columnasDeInteres = ['close']
-df_filtered = df_timed[columnasDeInteres]
 
 #-----------------------------------------------------------------------------
 def DIFF(df,cicles=1, column='close', addToDf=True):
@@ -357,3 +336,18 @@ def getIndicadores(df, rsi=False, ma=[], bBand=[]):
     if bBand:
        BolingerBands(df_filtered, bBand[0], bBand[1])
     return df_filtered#.iloc[::-1]
+
+if __name__ == "__main__":
+        
+    #Levanta el dataframe.csv como serie temporal
+    archivo = 'Binance_BTCUSDT_m.csv'
+    fname = os.path.join(archivo)
+    df_raw = pd.read_csv(fname, index_col=['date'], parse_dates=True)
+
+    #Filtrar por lapso de tiempo
+    df_timed = df_raw['2021-09-01 00:00:00':'2021-11-03 00:00:00']
+
+    #Filtra por columnas de interés
+    columnasDeInteres = ['open', 'high', 'low', 'close']
+    #columnasDeInteres = ['close']
+    df_filtered = df_timed[columnasDeInteres]

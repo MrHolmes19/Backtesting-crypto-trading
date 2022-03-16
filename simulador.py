@@ -175,10 +175,11 @@ def simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, monto_inicial
 
 ## ---------------------------------- Ejecucion de simulacro --------------------------------------------
 
-start = timer() 
+if __name__ == "__main__":
+    start = timer() 
 
-simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, monto_inicial, freq, notif, *bots)
-stop = timer()
-time = stop-start
-print(f"Tiempo invertido en realizar {n * len(bots)} simulaciones, con el metodo {metodo}: ", time)
+    simular(cripto, fuente, n, dt, inicio, desplazamiento, metodo, monto_inicial, freq, notif, *bots)
+    stop = timer()
+    time = stop-start
+    print(f"Tiempo invertido en realizar {n * len(bots)} simulaciones, con el metodo {metodo}: ", time)
 

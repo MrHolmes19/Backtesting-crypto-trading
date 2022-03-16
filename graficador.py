@@ -37,8 +37,7 @@ def candlestickGraph(df, title="", *args):
     de compra o venta
     
     '''
-    print("Inicio")
-    start = time.process_time() 
+    print("Iniciando impresión...")
     
     if type(df)== str:
         archivo = df
@@ -90,14 +89,8 @@ def candlestickGraph(df, title="", *args):
     # La barra mas finita representa el maximo y el minimo de la vela
     # El ancho entre ambas en relacion 1:4
     color = ["green" if close_price > open_price else "red" for close_price, open_price in zip(c, o)]
-    print("Antes del open close")
-    print(time.process_time() - start)
     plt.bar(x=t, height=np.abs(o-c), bottom=np.min((o,c), axis=0), width=ancho, color=color)  #Esto arma el open-close con su width definido
-    print("Antes del bar high-low")
-    print(time.process_time() - start)
     plt.bar(x=t, height=h-l, bottom=l, width=ancho/4, color=color) #esto arma el high-low con su width definido
-    print("Antes del xticks")
-    print(time.process_time() - start)
     plt.xticks(rotation=45, ha='right')
     
     #Se revisan los parametros ingresados por *args y se grafican las medias y/o las bandas de bollinger
@@ -106,7 +99,9 @@ def candlestickGraph(df, title="", *args):
 
     for i in args:
         if "ma" in i:
-            plt.plot(df[i], Label=i)
+            print(i)
+            print(type(i))
+            plt.plot(df[i])#, Label=i)
             bbox_props = dict(boxstyle="square", fc=(0.6, 0.7, 0.7, 0.5), lw=1)     
             plt.text(df.index[-1], df[i][-1], i,ha="left", va="center", size=9, bbox=bbox_props)
         if "bBand" in i:
@@ -143,3 +138,50 @@ def candlestickGraph(df, title="", *args):
     plt.show()
 
 
+def transparentCandlestick(df, title="", *args):
+    '''
+    Parameters
+    ----------
+    df : Pandas.DataFrame o String con ruta de csv
+        Index = DateTime
+        Columns Necesarias = "Open", "High", "Low", "Close"
+
+    Plotea un grafico de velas con opcion a indicadores. Tambien marca eventos
+    de compra o venta
+    
+    '''
+    if type(df)== str:
+        archivo = df
+        fname = os.path.join(archivo)
+        df = pd.read_csv(fname, index_col=['date'], parse_dates=True)
+       
+    #Se toman los valores de mercado en variables sencillas para graficar las velas
+    t = df.index
+    o = df["open"]
+    # h = df["high"]
+    # l = df["low"]
+    c = df["close"]         
+    
+    plt.figure()
+    gs = gridspec.GridSpec(1, 1)            #Setea un grid inutil pero para que se pueda sobreescribir en el condicional
+    ancho = 1.5*(df.index[0]-df.index[1])   # Define un ancho de vela como 0.9*invervalo X
+
+    # Se generan 2 barras, una mas ancha que representa la apertura y cierre de la vela
+    # La barra mas finita representa el maximo y el minimo de la vela
+    # El ancho entre ambas en relacion 1:4
+    color = ["green" if close_price > open_price else "red" for close_price, open_price in zip(c, o)]
+    plt.bar(x=t, height=np.abs(o-c), bottom=np.min((o,c), axis=0), width=ancho, color=color, alpha=0.5)  #Esto arma el open-close con su width definido
+    # plt.bar(x=t, height=h-l, bottom=l, width=ancho/4, color=color) #esto arma el high-low con su width definido
+    plt.xticks(rotation=45, ha='right')
+    
+    #Se revisan los parametros ingresados por *args y se grafican las medias y/o las bandas de bollinger
+    operaciones = df.index
+
+    plt.plot(df['price'])#, Label=i)
+    bbox_props = dict(boxstyle="square", fc=(0.6, 0.7, 0.7, 0.5), lw=1)     
+    plt.text(df.index[-1], df['price'][-1], 'price',ha="left", va="center", size=9, bbox=bbox_props)
+        
+    plt.title(title, loc="center")
+    plt.ylabel('BTC/USDT', fontsize=12)
+    plt.grid(alpha=0.2)
+    plt.show()
